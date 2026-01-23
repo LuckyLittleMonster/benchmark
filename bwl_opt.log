@@ -1,0 +1,182 @@
+./run_bwl_opt.sh
+
+════════════════════════════════════════════════════════
+  GPU Direct RDMA Performance Test Suite
+════════════════════════════════════════════════════════
+
+Strategy: Independent libfabric instance (NCCL's approach)
+  - MPI for coordination
+  - Separate libfabric instance for GPU Direct RDMA
+  - Optimized tight polling (no sleep) for best performance
+
+Test Suite (all with batch optimizations):
+  1. Unidirectional Bandwidth (Rank 0 -> Rank 1, batched)
+  2. Ping-Pong with 1-byte Ack (batched + fi_inject)
+  3. Ping-Pong with Same-size Reply (batched)
+
+Optimizations:
+  - Batch operations: Fixed window size of 16 for all message sizes
+  - Batch CQ reads: Read up to 16 completions at once
+  - fi_inject: For 1-byte acks (no wait needed)
+  - Tight polling: Continuous CQ polling without sleep
+
+Compiling bwl.c...
+✓ Compilation successful
+
+════════════════════════════════════════════════════════
+  Environment Configuration
+════════════════════════════════════════════════════════
+Provider:         cxi
+Libfabric:        NCCL bundled (v1.23.1)
+GPU Direct RDMA:  Enabled
+Polling mode:     Tight polling (optimized)
+
+════════════════════════════════════════════════════════
+  Test Configuration
+════════════════════════════════════════════════════════
+Nodes:            2
+Tasks:            2 (1 per node)
+GPUs per task:    1
+
+Bandwidth test:
+  - Iterations:   100 (after 20 warmup)
+  - Message size: 1 B to 4 GB
+  - Direction:    Unidirectional (Rank 0 -> Rank 1)
+
+Latency test:
+  - Iterations:   1000 (after 20 warmup)
+  - Message size: 1 B to 4 GB
+  - Pattern:      Ping-Pong (round-trip / 2)
+
+════════════════════════════════════════════════════════
+  Starting Test
+════════════════════════════════════════════════════════
+
+srun: job 44604410 queued and waiting for resources
+srun: job 44604410 has been allocated resources
+libfabric:1898618:1761848179::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:1898618:1761848179::core:core:ofi_hmem_init():612<warn> Failed to initialize hmem iface FI_HMEM_ZE: No data available                                                                                                                 
+libfabric:1898618:1761848179::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:1898618:1761848179::core:core:ofi_hmem_init():612<warn> Failed to initialize hmem iface FI_HMEM_ZE: No data available                                                                                                                 
+libfabric:1898618:1761848179::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:1898618:1761848179::cxi:av:cxip_av_open_validate_args():839<warn> nid001305: Shared AVs not supported
+libfabric:1397640:1761848179::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:1397640:1761848179::core:core:ofi_hmem_init():612<warn> Failed to initialize hmem iface FI_HMEM_ZE: No data available                                                                                                                 
+libfabric:1397640:1761848179::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:1397640:1761848179::core:core:ofi_hmem_init():612<warn> Failed to initialize hmem iface FI_HMEM_ZE: No data available                                                                                                                 
+libfabric:1397640:1761848179::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:1397640:1761848179::cxi:av:cxip_av_open_validate_args():839<warn> nid001500: Shared AVs not supported
+=== Optimized GPU Direct RDMA Performance Tests ===
+Configuration:
+  - Max message size: 10 MB
+  - GPU buffer size: 1024 MB (for batch operations)
+  - Batch window: 16 operations
+
+Optimizations applied to all tests:
+  1. Batch operations: Pre-post up to 16 operations
+  2. Buffer offsets: Each operation uses different offset
+  3. Batch CQ read: Read up to 16 completions at once
+  4. fi_inject: For 1-byte ack in Test 2 (no wait needed)
+  5. Tight polling: No sleep, continuous CQ polling
+
+=== Test 1: Unidirectional Bandwidth (Rank 0 -> Rank 1, batched) ===
+size                          latency(us)                   BW(MB/s)                      
+1                             1.634517                      0.000694                      
+2                             2.341793                      0.000968                      
+4                             2.331414                      0.001946                      
+8                             2.372172                      0.003824                      
+16                            2.097862                      0.008649                      
+32                            2.256759                      0.016079                      
+64                            2.573241                      0.028204                      
+128                           2.607103                      0.055674                      
+256                           0.891379                      0.325673                      
+512                           0.876862                      0.662129                      
+1024                          0.896897                      1.294678                      
+2048                          0.922828                      2.516596                      
+4096                          0.923828                      5.027743                      
+8192                          0.990517                      9.378470                      
+16384                         1.334310                      13.924101                     
+32768                         2.495862                      14.887900                     
+65536                         3.961793                      18.758246                     
+131072                        7.058103                      21.058430                     
+262144                        13.373069                     22.228642                     
+524288                        26.064138                     22.810281                     
+1048576                       51.553414                     23.064634                     
+2097152                       106.541379                    22.321105                     
+4194304                       209.260138                    22.728851                     
+8388608                       443.359310                    21.455476                     
+
+=== Test 2: Ping-Pong with 1-byte Ack (batched + fi_inject) ===
+size                          latency(us)                   BW(MB/s)                      
+1                             2.768448                      0.000819                      
+2                             3.502966                      0.000971                      
+4                             3.498138                      0.001621                      
+8                             3.492931                      0.002922                      
+16                            3.114655                      0.006189                      
+32                            3.443207                      0.010868                      
+64                            3.617310                      0.020377                      
+128                           3.774862                      0.038752                      
+256                           2.021483                      0.144167                      
+512                           2.024966                      0.287279                      
+1024                          2.070207                      0.561454                      
+2048                          2.079172                      1.117521                      
+4096                          2.035310                      2.282650                      
+8192                          2.287517                      4.061465                      
+16384                         2.522103                      7.366949                      
+32768                         3.564793                      10.423965                     
+65536                         4.957828                      14.989917                     
+131072                        8.027586                      18.515368                     
+262144                        18.582448                     15.997154                     
+524288                        31.291862                     18.999555                     
+1048576                       52.783000                     22.527363                     
+2097152                       100.947448                    23.558024                     
+4194304                       212.794552                    22.351342                     
+8388608                       442.454138                    21.499372                     
+
+=== Test 3: Ping-Pong Same-size Reply (batched) ===
+size                          latency(us)                   BW(MB/s)                      
+1                             1.459552                      0.000777                      
+2                             2.334690                      0.000971                      
+4                             2.182138                      0.002079                      
+8                             2.166776                      0.004187                      
+16                            2.131190                      0.008513                      
+32                            1.901603                      0.019082                      
+64                            2.141724                      0.033886                      
+128                           2.690534                      0.053948                      
+256                           0.772517                      0.375782                      
+512                           0.791517                      0.733523                      
+1024                          0.793259                      1.463825                      
+2048                          0.803103                      2.891762                      
+4096                          0.831086                      5.588792                      
+8192                          0.903810                      10.278192                     
+16384                         1.270034                      14.628794                     
+32768                         2.342793                      15.860617                     
+65536                         3.689207                      20.144246                     
+131072                        6.700707                      22.181627                     
+262144                        12.725621                     23.359580                     
+524288                        25.474914                     23.337874                     
+1048576                       49.867897                     23.844211                     
+2097152                       101.772655                    23.366997                     
+4194304                       216.078310                    22.011661                     
+8388608                       437.319552                    21.751795                     
+
+=== All Tests Complete ===
+
+════════════════════════════════════════════════════════
+  Test Complete
+════════════════════════════════════════════════════════
+
+✓ Test completed successfully
+
+Key Findings:
+  - Independent libfabric instance works with MPI
+  - GPU Direct RDMA enabled and functional
+  - Tight polling eliminates sleep overhead
+
+Performance Notes:
+  - Peak bandwidth typically at large message sizes (>1MB)
+  - Latency should be ~1-2 µs for small messages
+  - Compare with MPI: ~20-25 GB/s, ~1-2 µs
+  - Compare with NCCL: ~20-25 GB/s, ~2-3 µs
+
+Output format matches bw.log for easy comparison

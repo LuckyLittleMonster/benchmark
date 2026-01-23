@@ -1,0 +1,185 @@
+(base) hqin@login33:~/ldata/benchmark> ./run_bwl.sh
+════════════════════════════════════════════════════════
+  GPU Direct RDMA Performance Test Suite
+════════════════════════════════════════════════════════
+
+Strategy: Independent libfabric instance (NCCL's approach)
+  - MPI for coordination
+  - Separate libfabric instance for GPU Direct RDMA
+  - Optimized tight polling (no sleep) for best performance
+
+Test Suite:
+  1. Unidirectional Bandwidth (Rank 0 -> Rank 1)
+  2. Ping-Pong with 1-byte Ack (measures round-trip time)
+  3. Ping-Pong with Same-size Reply (measures one-way latency)
+
+Compiling bwl.c...
+✓ Compilation successful
+
+════════════════════════════════════════════════════════
+  Environment Configuration
+════════════════════════════════════════════════════════
+Provider:         cxi
+Libfabric:        NCCL bundled (v1.23.1)
+GPU Direct RDMA:  Enabled
+Polling mode:     Tight polling (optimized)
+
+════════════════════════════════════════════════════════
+  Test Configuration
+════════════════════════════════════════════════════════
+Nodes:            2
+Tasks:            2 (1 per node)
+GPUs per task:    1
+
+Bandwidth test:
+  - Iterations:   100 (after 20 warmup)
+  - Message size: 1 B to 4 GB
+  - Direction:    Unidirectional (Rank 0 -> Rank 1)
+
+Latency test:
+  - Iterations:   1000 (after 20 warmup)
+  - Message size: 1 B to 4 GB
+  - Pattern:      Ping-Pong (round-trip / 2)
+
+════════════════════════════════════════════════════════
+  Starting Test
+════════════════════════════════════════════════════════
+
+srun: job 44601755 queued and waiting for resources
+srun: job 44601755 has been allocated resources
+libfabric:2143216:1761843156::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:2143216:1761843156::core:core:ofi_hmem_init():612<warn> Failed to initialize hmem iface FI_HMEM_ZE: No data available
+libfabric:2143216:1761843156::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:2143216:1761843156::core:core:ofi_hmem_init():612<warn> Failed to initialize hmem iface FI_HMEM_ZE: No data available
+libfabric:2143216:1761843156::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:2143216:1761843156::cxi:av:cxip_av_open_validate_args():839<warn> nid002432: Shared AVs not supported
+libfabric:1542112:1761843156::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:1542112:1761843156::core:core:ofi_hmem_init():612<warn> Failed to initialize hmem iface FI_HMEM_ZE: No data available
+libfabric:1542112:1761843156::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:1542112:1761843156::core:core:ofi_hmem_init():612<warn> Failed to initialize hmem iface FI_HMEM_ZE: No data available
+libfabric:1542112:1761843156::core:core:ze_hmem_dl_init():524<warn> Failed to dlopen libze_loader.so
+libfabric:1542112:1761843156::cxi:av:cxip_av_open_validate_args():839<warn> nid002180: Shared AVs not supported
+=== Test 1: Unidirectional (Rank 0 -> Rank 1) ===
+size                          latency(us)                   BW(MB/s)                      
+1                             6.359552                      0.000178                      
+2                             7.004931                      0.000324                      
+4                             6.837724                      0.000663                      
+8                             6.928897                      0.001309                      
+16                            6.492586                      0.002795                      
+32                            6.471862                      0.005607                      
+64                            6.505690                      0.011156                      
+128                           7.278241                      0.019943                      
+256                           6.734414                      0.043107                      
+512                           6.763448                      0.085843                      
+1024                          6.842897                      0.169693                      
+2048                          6.911310                      0.336027                      
+4096                          7.089586                      0.655154                      
+8192                          7.535621                      1.232750                      
+16384                         8.248034                      2.252545                      
+32768                         15.606069                     2.381006                      
+65536                         17.346345                     4.284262                      
+131072                        20.403310                     7.284729                      
+262144                        26.742793                     11.115711                     
+524288                        42.594862                     13.957794                     
+1048576                       62.062207                     19.159174                     
+2097152                       109.879621                    21.642970                     
+4194304                       203.323276                    23.392514                     
+8388608                       399.711724                    23.798364                     
+16777216                      777.062552                    24.483190                     
+33554432                      1540.840414                   24.694277                     
+67108864                      3319.760345                   22.923306                     
+134217728                     6508.629379                   23.384303                     
+268435456                     13139.135034                  23.167394                     
+536870912                     26185.039138                  23.249881                     
+1073741824                    52579.129897                  23.157441                     
+
+=== Test 2: Ping-Pong with 1-byte Ack ===
+size                          latency(us)                   BW(MB/s)                      
+1                             8.605966                      0.000264                      
+2                             9.463828                      0.000359                      
+4                             9.188138                      0.000617                      
+8                             9.291414                      0.001098                      
+16                            8.765931                      0.002199                      
+32                            8.875448                      0.004216                      
+64                            8.921069                      0.008262                      
+128                           9.541586                      0.015331                      
+256                           8.875448                      0.032836                      
+512                           8.990517                      0.064705                      
+1024                          9.177103                      0.126655                      
+2048                          9.404759                      0.247058                      
+4096                          9.284517                      0.500392                      
+8192                          9.729517                      0.954895                      
+16384                         10.408759                     1.785055                      
+32768                         17.941276                     2.071161                      
+65536                         19.431034                     3.824677                      
+131072                        22.390897                     6.638131                      
+262144                        28.676207                     10.366305                     
+524288                        44.877552                     13.247858                     
+1048576                       63.827379                     18.629337                     
+2097152                       112.896138                    21.064692                     
+4194304                       214.458931                    22.177877                     
+8388608                       402.120828                    23.655791                     
+16777216                      773.622414                    24.592063                     
+33554432                      1552.055207                   24.515843                     
+67108864                      3345.919552                   22.744086                     
+134217728                     6522.939000                   23.333004                     
+268435456                     13256.599379                  22.962112                     
+536870912                     26300.815517                  23.147535                     
+1073741824                    52546.483586                  23.171828                     
+
+=== Test 3: Ping-Pong with Same-size Reply ===
+size                          latency(us)                   BW(MB/s)                      
+1                             4.309034                      0.000263                      
+2                             4.912966                      0.000462                      
+4                             4.887224                      0.000928                      
+8                             4.837483                      0.001875                      
+16                            4.439983                      0.004086                      
+32                            4.542241                      0.007989                      
+64                            4.723638                      0.015364                      
+128                           5.568362                      0.026067                      
+256                           4.725017                      0.061439                      
+512                           4.833328                      0.120123                      
+1024                          4.881017                      0.237900                      
+2048                          5.176741                      0.448619                      
+4096                          5.242724                      0.885946                      
+8192                          5.397172                      1.721186                      
+16384                         6.251569                      2.971906                      
+32768                         13.978431                     2.658249                      
+65536                         15.380621                     4.831813                      
+131072                        17.889293                     8.308466                      
+262144                        23.937707                     12.418281                     
+524288                        36.711931                     16.194472                     
+1048576                       59.646155                     19.935244                     
+2097152                       106.448638                    22.340552                     
+4194304                       204.712828                    23.233730                     
+8388608                       398.160948                    23.891055                     
+16777216                      805.749086                    23.611532                     
+33554432                      1560.845845                   24.377770                     
+67108864                      3380.836431                   22.509187                     
+134217728                     6671.484655                   22.813477                     
+268435456                     13264.179397                  22.948990                     
+536870912                     26272.685897                  23.172319                     
+1073741824                    52492.589276                  23.195619                     
+
+=== All Tests Complete ===
+
+════════════════════════════════════════════════════════
+  Test Complete
+════════════════════════════════════════════════════════
+
+✓ Test completed successfully
+
+Key Findings:
+  - Independent libfabric instance works with MPI
+  - GPU Direct RDMA enabled and functional
+  - Tight polling eliminates sleep overhead
+
+Performance Notes:
+  - Peak bandwidth typically at large message sizes (>1MB)
+  - Latency should be ~1-2 µs for small messages
+  - Compare with MPI: ~20-25 GB/s, ~1-2 µs
+  - Compare with NCCL: ~20-25 GB/s, ~2-3 µs
+
+Output format matches bw.log for easy comparison
+
+(base) hqin@login33:~/ldata/benchmark> 

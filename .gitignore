@@ -1,0 +1,16 @@
+
+# Ignore files without extensions (e.g. compiled binaries)
+*
+!*.*
+!*/
+
+
+# Ignore directories
+docs/
+old_logs/
+aws-ofi-nccl/
+osu-micro-benchmarks-7.5.1/
+
+# Ignore large archives
+osu-micro-benchmarks-7.5.1.tar.gz
+*.md

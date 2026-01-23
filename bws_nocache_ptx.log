@@ -1,0 +1,77 @@
+Found 4 GPU(s)
+
+GPU 0: NVIDIA A100-SXM4-80GB
+  Clock rate: 1.41 GHz
+  L2 Cache: 40 MB
+  Shared Memory per Block: 48 KB
+
+GPU 1: NVIDIA A100-SXM4-80GB
+  Clock rate: 1.41 GHz
+
+P2P Access (GPU 0 -> GPU 1): Supported
+
+Using PTX cache bypass instructions for reads to shared memory:
+  ld.global.cv.f32 - load with cache volatile (bypasses cache on read)
+  Data written to: Shared Memory
+
+P2P Test Type:
+  GET only: GPU 0 kernel reads from GPU 1, writes to local shared memory
+  (PUT is not applicable for shared memory target)
+P2P enabled: GPU 0 -> GPU 1
+
+
+=== Test 1: GPU 0 Global -> GPU 0 Shared (baseline, run on GPU 0) ===
+size(B)        	latency(us)    	bw(MB/s)       
+4              	0.334673       	11.398283      
+8              	0.328314       	23.238078      
+16             	0.331962       	45.965445      
+32             	0.334312       	91.284746      
+64             	0.331429       	184.157458     
+128            	0.318359       	383.435455     
+256            	0.320902       	760.795135     
+512            	0.326798       	1494.138891    
+1024           	0.332267       	2939.086513    
+2048           	0.353664       	5522.550458    
+4096           	0.401282       	9734.418236    
+8192           	0.696641       	11214.529982   
+16384          	1.108872       	14090.899841   
+32768          	2.084346       	14992.710185   
+
+=== Test 2: CPU Memory -> GPU 0 Shared (UMA read, run on GPU 0) ===
+size(B)        	latency(us)    	bw(MB/s)       
+4              	0.890054       	4.285915       
+8              	0.889595       	8.576261       
+16             	0.889680       	17.150864      
+32             	0.889542       	34.307087      
+64             	0.894404       	68.241124      
+128            	0.890641       	137.058916     
+256            	0.894899       	272.813720     
+512            	0.911946       	535.427567     
+1024           	0.927130       	1053.317576    
+2048           	0.963819       	2026.443675    
+4096           	1.039117       	3759.202411    
+8192           	1.884685       	4145.254714    
+16384          	3.500193       	4464.039014    
+32768          	6.655594       	4695.298757    
+
+=== Test 3: GET - GPU 1 -> GPU 0 Shared (run on GPU 0, remote read to local shared) ===
+size(B)        	latency(us)    	bw(MB/s)       
+4              	0.605139       	6.303840       
+8              	0.598756       	12.742069      
+16             	0.598743       	25.484686      
+32             	0.598744       	50.969311      
+64             	0.601990       	101.388968     
+128            	0.597102       	204.437878     
+256            	0.598751       	407.749607     
+512            	0.619211       	788.553569     
+1024           	0.638270       	1530.014887    
+2048           	0.645005       	3028.078914    
+4096           	0.695609       	5615.580597    
+8192           	1.278175       	6112.231981    
+16384          	2.529662       	6176.714843    
+32768          	4.932321       	6335.759468    
+
+All tests completed!
+
+Note: Using PTX .cv for complete cache bypass on reads to shared memory.
+This measures true read latency without cache interference.
