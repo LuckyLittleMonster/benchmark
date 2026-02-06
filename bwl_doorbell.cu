@@ -36,7 +36,7 @@ __global__ void device_initiated_send(
         dst[i] = src[i];
     }
     
-    __threadfence_system();
+    __threadfence();
     
     if (blockIdx.x == 0 && threadIdx.x == 0) {
         *ready_flag = 1;
@@ -65,7 +65,7 @@ __global__ void device_initiated_send_bytes(
         dst[idx] = src[idx];
     }
     
-    __threadfence_system();
+    __threadfence();
     
     if (blockIdx.x == 0 && threadIdx.x == 0) {
         *ready_flag = 1;
